@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чек-лист для рефлексии: Хакатон как первый опыт вайб-кодинга</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cae;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #51cf66;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .user-section {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .user-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .checkmark {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+        }
+        
+        .question {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        #saveBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #saveBtn:hover {
+            background-color: #3d5d8a;
+        }
+        
+        #resetBtn {
+            background-color: #e9ecef;
+            color: var(--dark-color);
+        }
+        
+        #resetBtn:hover {
+            background-color: #dee2e6;
+        }
+        
+        #exportBtn {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        #exportBtn:hover {
+            background-color: #3daa51;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.error {
+            background-color: var(--accent-color);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .user-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Чек-лист для рефлексии</h1>
+            <p class="description">Хакатон как первый опыт вайб-кодинга</p>
+        </header>
+        
+        <div class="user-section">
+            <div class="user-input">
+                <label for="userName">Ваше имя:</label>
+                <input type="text" id="userName" placeholder="Введите ваше имя">
+                <button type="button" id="saveUserName">Сохранить</button>
+            </div>
+        </div>
+        
+        <form id="reflectionForm">
+            <!-- Section 1 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Цель и ожидания</h2>
+                
+                <div class="question">
+                    <div class="question-text">Какую цель я ставил перед собой на хакатоне? (например: «попробовать кодить с ИИ», «выжить в сроки», «понять, что такое GitVerse/Github»)</div>
+                    <textarea name="goal" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Что я ожидал от использования LLM-инструмента (Gigacode и др.)? Что получилось на деле?</div>
+                    <textarea name="expectations" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Были ли у меня предубеждения насчёт «ненастоящего» кодирования с ИИ? Изменились ли они?</div>
+                    <textarea name="prejudices" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 2 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Процесс вайб-кодинга</h2>
+                
+                <div class="question">
+                    <div class="question-text">Как я взаимодействовал с LLM-инструментом? (Писал промпты? Копипастил ответы? Переписывал их? Доверял слепо?)</div>
+                    <textarea name="interaction" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Как часто я проверял, что ИИ написал — работало ли это? Писал ли тесты? Дебажил сам или полагался на ИИ?</div>
+                    <textarea name="verification" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Были ли моменты, когда ИИ «сводил с ума»? (например: выдавал бессмысленный код, ложные ошибки, противоречивые советы)</div>
+                    <textarea name="ai_madness" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Как я отличал «вайб» от «рабочего кода»? Когда понял: «это звучит круто, но не сработает»?</div>
+                    <textarea name="vibe_vs_work" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 3 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Командная работа через GitVerse/Github</h2>
+                
+                <div class="question">
+                    <div class="question-text">Как я использовал GitVerse/Github? (обсуждения, задачи, комментарии к коду, голосования?)</div>
+                    <textarea name="gitverse_usage" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Была ли у команды общая «вайб-культура»? Например: кто писал промпты, кто чистил код, кто объяснял ИИ, кто ревьюил?</div>
+                    <textarea name="team_culture" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Были ли конфликты из-за разных подходов к вайб-кодингу? (например: один доверял ИИ полностью, другой — ни капли)</div>
+                    <textarea name="conflicts" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Как распределялись роли? Кто был «вайб-дизайнером», «код-рефакторером», «промпт-инженером»?</div>
+                    <textarea name="roles" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 4 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Результат и продукт</h2>
+                
+                <div class="question">
+                    <div class="question-text">Что именно мы сделали? Какой продукт? Насколько он работал?</div>
+                    <textarea name="result" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Сколько кода было написано мной лично? Сколько — ИИ? Сколько — переписано/отредактировано мной?</div>
+                    <textarea name="code_distribution" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Если бы проект запускался в продакшен — что бы сломалось первым? Почему?</div>
+                    <textarea name="production_issues" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Что в результате мне кажется «настоящим достижением»? А что — «вайбовым фейком»?</div>
+                    <textarea name="achievements" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 5 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Эмоции и внутренний опыт</h2>
+                
+                <div class="question">
+                    <div class="question-text">Какие эмоции я испытывал чаще всего: (Удовлетворение? Зависть? Страх? Гнев? Оцепенение? Эйфория?)</div>
+                    <textarea name="emotions" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Чувствовал ли я себя «настоящим разработчиком»? Почему да/нет?</div>
+                    <textarea name="real_developer" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Был ли момент, когда я подумал: «Я вообще не понимаю, что тут происходит»? Что тогда сделал?</div>
+                    <textarea name="confusion" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Было ли чувство «магии»? (когда ИИ буквально «угадал» то, что ты хотел, но не смог сформулировать)</div>
+                    <textarea name="magic" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 6 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Уроки и инсайты</h2>
+                
+                <div class="question">
+                    <div class="question-text">Что я узнал о себе как о программисте/коллеге/человеке, который работает с ИИ?</div>
+                    <textarea name="lessons_about_self" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Какой один промпт я написал — и он сработал лучше всего? Почему?</div>
+                    <textarea name="best_prompt" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Какой один момент стал поворотным — когда я понял, что вайб-кодинг — это не волшебство, а новый навык?</div>
+                    <textarea name="turning_point" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Что я хочу лучше делать на следующем хакатоне/задании? (Больше писать промпты? Меньше доверять? Чаще тестировать? Объяснять ИИ контекст?)</div>
+                    <textarea name="next_time" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Section 7 -->
+            <div class="section">
+                <h2 class="section-title"><span class="checkmark">✓</span> Философский вопрос (для глубины)</h2>
+                
+                <div class="question">
+                    <div class="question-text">Если бы этот проект не имел ни одного строчки моего кода — только мои промпты и идеи — был бы он моим?</div>
+                    <textarea name="ownership" placeholder="Ваш ответ..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Что значит «создать» в эпоху вайб-кодинга?</div>
+                    <textarea name="creation_meaning" placeholder="Ваш ответ..."></textarea>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" id="resetBtn">Очистить форму</button>
+                <button type="button" id="saveBtn">Сохранить ответы</button>
+                <button type="button" id="exportBtn">Сохранить в файл</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="notification" id="notification">Ответы успешно сохранены!</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reflectionForm');
+            const saveBtn = document.getElementById('saveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const saveUserNameBtn = document.getElementById('saveUserName');
+            const userNameInput = document.getElementById('userName');
+            const notification = document.getElementById('notification');
+            
+            // Загрузка сохраненных данных из localStorage
+            loadSavedData();
+            
+            // Сохранение имени пользователя
+            saveUserNameBtn.addEventListener('click', function() {
+                const userName = userNameInput.value.trim();
+                if (userName) {
+                    localStorage.setItem('reflectionUserName', userName);
+                    showNotification('Имя сохранено!');
+                } else {
+                    showNotification('Пожалуйста, введите ваше имя', true);
+                }
+            });
+            
+            // Сохранение ответов
+            saveBtn.addEventListener('click', function() {
+                const userName = userNameInput.value.trim();
+                if (!userName) {
+                    showNotification('Пожалуйста, сначала введите ваше имя', true);
+                    return;
+                }
+                
+                const formData = new FormData(form);
+                const answers = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    answers[key] = value;
+                }
+                
+                localStorage.setItem('reflectionAnswers', JSON.stringify(answers));
+                localStorage.setItem('reflectionUserName', userName);
+                showNotification('Ответы успешно сохранены!');
+            });
+            
+            // Очистка формы
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите очистить все ответы?')) {
+                    form.reset();
+                    userNameInput.value = '';
+                    localStorage.removeItem('reflectionAnswers');
+                    localStorage.removeItem('reflectionUserName');
+                    showNotification('Все данные очищены');
+                }
+            });
+            
+            // Экспорт в файл
+            exportBtn.addEventListener('click', function() {
+                const userName = userNameInput.value.trim();
+                if (!userName) {
+                    showNotification('Пожалуйста, сначала введите ваше имя', true);
+                    return;
+                }
+                
+                const formData = new FormData(form);
+                const answers = {};
+                
+                for (let [key, value] of formData.entries()) {
+                    answers[key] = value;
+                }
+                
+                // Формирование текстового файла
+                let fileContent = `Чек-лист для рефлексии: Хакатон как первый опыт вайб-кодинга\n`;
+                fileContent += `Пользователь: ${userName}\n`;
+                fileContent += `Дата: ${new Date().toLocaleDateString('ru-RU')}\n`;
+                fileContent += `========================================\n\n`;
+                
+                // Добавление ответов по разделам
+                const sections = [
+                    { title: "Цель и ожидания", questions: ["goal", "expectations", "prejudices"] },
+                    { title: "Процесс вайб-кодинга", questions: ["interaction", "verification", "ai_madness", "vibe_vs_work"] },
+                    { title: "Командная работа через GitVerse", questions: ["gitverse_usage", "team_culture", "conflicts", "roles"] },
+                    { title: "Результат и продукт", questions: ["result", "code_distribution", "production_issues", "achievements"] },
+                    { title: "Эмоции и внутренний опыт", questions: ["emotions", "real_developer", "confusion", "magic"] },
+                    { title: "Уроки и инсайты", questions: ["lessons_about_self", "best_prompt", "turning_point", "next_time"] },
+                    { title: "Философский вопрос (для глубины)", questions: ["ownership", "creation_meaning"] }
+                ];
+                
+                sections.forEach(section => {
+                    fileContent += `\n${section.title}\n`;
+                    fileContent += `${'='.repeat(section.title.length)}\n\n`;
+                    
+                    section.questions.forEach(questionKey => {
+                        const questionText = getQuestionText(questionKey);
+                        const answer = answers[questionKey] || 'Не указано';
+                        
+                        fileContent += `Вопрос: ${questionText}\n`;
+                        fileContent += `Ответ: ${answer}\n\n`;
+                    });
+                });
+                
+                // Создание и скачивание файла
+                const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Рефлексия_${userName}_${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('Файл успешно сохранен!');
+            });
+            
+            // Функция загрузки сохраненных данных
+            function loadSavedData() {
+                const savedAnswers = localStorage.getItem('reflectionAnswers');
+                const savedUserName = localStorage.getItem('reflectionUserName');
+                
+                if (savedUserName) {
+                    userNameInput.value = savedUserName;
+                }
+                
+                if (savedAnswers) {
+                    const answers = JSON.parse(savedAnswers);
+                    
+                    for (const [key, value] of Object.entries(answers)) {
+                        const textarea = form.querySelector(`textarea[name="${key}"]`);
+                        if (textarea) {
+                            textarea.value = value;
+                        }
+                    }
+                }
+            }
+            
+            // Получение текста вопроса по ключу
+            function getQuestionText(key) {
+                const questions = {
+                    goal: "Какую цель я ставил перед собой на хакатоне?",
+                    expectations: "Что я ожидал от использования LLM-инструмента (Gigacode и др.)? Что получилось на деле?",
+                    prejudices: "Были ли у меня предубеждения насчёт «ненастоящего» кодирования с ИИ? Изменились ли они?",
+                    interaction: "Как я взаимодействовал с LLM-инструментом?",
+                    verification: "Как часто я проверял, что ИИ написал — работало ли это? Писал ли тесты? Дебажил сам или полагался на ИИ?",
+                    ai_madness: "Были ли моменты, когда ИИ «сводил с ума»?",
+                    vibe_vs_work: "Как я отличал «вайб» от «рабочего кода»? Когда понял: «это звучит круто, но не сработает»?",
+                    gitverse_usage: "Как я использовал GitVerse/Github?",
+                    team_culture: "Была ли у команды общая «вайб-культура»?",
+                    conflicts: "Были ли конфликты из-за разных подходов к вайб-кодингу?",
+                    roles: "Как распределялись роли?",
+                    result: "Что именно мы сделали? Какой продукт? Насколько он работал?",
+                    code_distribution: "Сколько кода было написано мной лично? Сколько — ИИ? Сколько — переписано/отредактировано мной?",
+                    production_issues: "Если бы проект запускался в продакшен — что бы сломалось первым? Почему?",
+                    achievements: "Что в результате мне кажется «настоящим достижением»? А что — «вайбовым фейком»?",
+                    emotions: "Какие эмоции я испытывал чаще всего:",
+                    real_developer: "Чувствовал ли я себя «настоящим разработчиком»? Почему да/нет?",
+                    confusion: "Был ли момент, когда я подумал: «Я вообще не понимаю, что тут происходит»? Что тогда сделал?",
+                    magic: "Было ли чувство «магии»?",
+                    lessons_about_self: "Что я узнал о себе как о программисте/коллеге/человеке, который работает с ИИ?",
+                    best_prompt: "Какой один промпт я написал — и он сработал лучше всего? Почему?",
+                    turning_point: "Какой один момент стал поворотным — когда я понял, что вайб-кодинг — это не волшебство, а новый навык?",
+                    next_time: "Что я хочу лучше делать на следующем хакатоне/задании?",
+                    ownership: "Если бы этот проект не имел ни одного строчки моего кода — только мои промпты и идеи — был бы он моим?",
+                    creation_meaning: "Что значит «создать» в эпоху вайб-кодинга?"
+                };
+                
+                return questions[key] || key;
+            }
+            
+            // Показать уведомление
+            function showNotification(message, isError = false) {
+                notification.textContent = message;
+                notification.classList.remove('error');
+                
+                if (isError) {
+                    notification.classList.add('error');
+                }
+                
+                notification.classList.add('show');
+                
+                setTimeout(function() {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Автосохранение при изменении
+            const textareas = form.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    const userName = userNameInput.value.trim();
+                    if (!userName) return;
+                    
+                    const formData = new FormData(form);
+                    const answers = {};
+                    
+                    for (let [key, value] of formData.entries()) {
+                        answers[key] = value;
+                    }
+                    
+                    localStorage.setItem('reflectionAnswers', JSON.stringify(answers));
+                    localStorage.setItem('reflectionUserName', userName);
+                });
+            });
+            
+            userNameInput.addEventListener('input', function() {
+                const userName = userNameInput.value.trim();
+                if (userName) {
+                    localStorage.setItem('reflectionUserName', userName);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
